@@ -60,6 +60,7 @@ public class PendingAppointmentFragment extends Fragment {
         firestore = FirebaseFirestore.getInstance();
         firestore.collection("PatientAppointments")
             .whereEqualTo("status", "pending")
+            .whereEqualTo("patientUserKey", FirebaseAuth.getInstance().getCurrentUser().getUid())
             .get()
             .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @Override

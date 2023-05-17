@@ -19,30 +19,32 @@
         android:paddingLeft="10dp"
         android:textColor="@color/mainTextColor">
     </TextView>
+
     <TextView
         android:id="@+id/spl"
-        android:layout_marginTop="2dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:text="Symptoms: dsf,fsd,fds,fg"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
+        android:layout_marginTop="2dp"
         android:layout_marginBottom="8dp"
-        android:textColor="@color/lightTextColor">
-    </TextView>
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Symptoms: dsf,fsd,fds,fg"
+        android:textColor="@color/lightTextColor"
+        android:textSize="16sp"
+        android:visibility="visible"></TextView>
+
     <TextView
         android:id="@+id/appointmentDate"
-        android:layout_marginTop="2dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:textSize="16sp"
-        android:text="Symptoms: dsf,fsd,fds,fg"
-        android:paddingRight="10dp"
-        android:paddingLeft="10dp"
+        android:layout_marginTop="2dp"
         android:layout_marginBottom="8dp"
-        android:textColor="@color/lightTextColor">
-    </TextView>
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:text="Symptoms: dsf,fsd,fds,fg"
+        android:textColor="@color/lightTextColor"
+        android:textSize="16sp"
+        android:visibility="visible"></TextView>
 
     <androidx.appcompat.widget.AppCompatButton
         android:id="@+id/cancel"

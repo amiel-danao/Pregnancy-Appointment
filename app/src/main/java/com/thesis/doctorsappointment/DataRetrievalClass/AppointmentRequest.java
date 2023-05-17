@@ -1,12 +1,12 @@
 package com.thesis.doctorsappointment.DataRetrievalClass;
 
 public class AppointmentRequest {
-    private String DateAndTime,DoctorAppointKey,Name,PatientAppointKey,PatientEmail,PatientID,PatientPhone, status;
+    private String DateAndTime,DoctorAppointKey,Name,PatientAppointKey,PatientEmail,PatientID,PatientPhone, status, doctorId;
 
     public AppointmentRequest() {
     }
 
-    public AppointmentRequest(String dateAndTime, String doctorAppointKey, String name, String patientAppointKey, String patientEmail, String patientID, String patientPhone, String status) {
+    public AppointmentRequest(String dateAndTime, String doctorAppointKey, String name, String patientAppointKey, String patientEmail, String patientID, String patientPhone, String status, String doctorId) {
         DateAndTime = dateAndTime;
         DoctorAppointKey = doctorAppointKey;
         Name = name;
@@ -15,6 +15,15 @@ public class AppointmentRequest {
         PatientID = patientID;
         PatientPhone = patientPhone;
         this.status = status;
+        this.doctorId = doctorId;
+    }
+
+    public String getDoctorId() {
+        return doctorId;
+    }
+
+    public void setDoctorId(String doctorId) {
+        this.doctorId = doctorId;
     }
 
     public String getStatus() {

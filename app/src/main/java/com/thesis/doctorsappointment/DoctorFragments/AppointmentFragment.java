@@ -58,6 +58,7 @@ public class AppointmentFragment extends Fragment {
         firestore = FirebaseFirestore.getInstance();
         firestore.collection("DoctorAppointments")
                 .whereEqualTo("status", "confirmed")
+                .whereEqualTo("doctorId", FirebaseAuth.getInstance().getCurrentUser().getUid())
                 .get()
                 .addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                     @Override

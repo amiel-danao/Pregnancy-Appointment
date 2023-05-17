@@ -78,13 +78,11 @@ public class AppointmentRequestAdapter  extends RecyclerView.Adapter<Appointment
 
                         WriteBatch batch = firestore.batch();
 
-// Set the value of 'status' to confirmed
                         DocumentReference patientRef = firestore.collection("PatientAppointments").document(appointmentRequest.getPatientAppointKey());
                         batch.delete(patientRef);
 
                         DocumentReference doctorRef = firestore.collection("DoctorAppointments").document(appointmentRequest.getDoctorAppointKey());
                         batch.delete(doctorRef);
-// Commit the batch
                         batch.commit().addOnCompleteListener(task -> {
                             progressDialog.dismiss();
                             if(task.isSuccessful()){
@@ -133,90 +131,6 @@ public class AppointmentRequestAdapter  extends RecyclerView.Adapter<Appointment
                                         }
                                     }
                                 });
-//                                FirebaseDatabase.getInstance().getReference().child("ConfirmedDocAppointments").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(appointmentRequest.getDoctorAppointKey()).setValue(appointmentRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                    @Override
-//                                    public void onComplete(@NonNull Task<Void> task) {
-//                                        if(task.isSuccessful()){
-//                                            FirebaseDatabase.getInstance().getReference().child("PendingPatientAppointments").child(appointmentRequest.getPatientID()).child(appointmentRequest.getPatientAppointKey()).addListenerForSingleValueEvent(new ValueEventListener() {
-//                                                @Override
-//                                                public void onDataChange(@NonNull DataSnapshot snapshot) {
-//                                                    PatientAppointmentRequest patientAppointmentRequest=snapshot.getValue(PatientAppointmentRequest.class);
-//                                                    if (patientAppointmentRequest == null){
-//                                                        progressDialog.dismiss();
-//                                                        return;
-//                                                    }
-//
-//                                                    FirebaseDatabase.getInstance().getReference().child("ConfirmedPatientAppointments").child(appointmentRequest.getPatientID()).child(patientAppointmentRequest.getPatientAppointKey()).setValue(patientAppointmentRequest).addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                                        @Override
-//                                                        public void onComplete(@NonNull Task<Void> task) {
-//                                                            if(task.isSuccessful()){
-//                                                                FirebaseDatabase.getInstance().getReference().child("PendingPatientAppointments").child(appointmentRequest.getPatientID()).child(appointmentRequest.getPatientAppointKey()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                                                    @Override
-//                                                                    public void onComplete(@NonNull Task<Void> task) {
-//                                                                        if(task.isSuccessful()){
-//                                                                            FirebaseDatabase.getInstance().getReference().child("PendingDocAppointments").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(appointmentRequest.getDoctorAppointKey()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-//                                                                                @Override
-//                                                                                public void onComplete(@NonNull Task<Void> task) {
-//                                                                                    if(task.isSuccessful()){
-//                                                                                        progressDialog.dismiss();
-//                                                                                        Toast.makeText(context, "Accepted", Toast.LENGTH_SHORT).show();
-////                                                                                        ((DoctorMainActivity)context).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_Container, new AppointmentRequestFragment(),"Appointment Requests").addToBackStack(null).commit();
-//                                                                                    }else {
-//                                                                                        progressDialog.dismiss();
-//                                                                                        ReusableFunctionsAndObjects.showMessageAlert(context, "Network Error", "Make sure you are connected to internet.", "OK",(byte)0);
-//                                                                                    }
-//                                                                                }
-//                                                                            }).addOnFailureListener(new OnFailureListener() {
-//                                                                                @Override
-//                                                                                public void onFailure(@NonNull Exception e) {
-//                                                                                    progressDialog.dismiss();
-//                                                                                    ReusableFunctionsAndObjects.showMessageAlert(context, "Network Error", "Make sure you are connected to internet.", "OK",(byte)0);
-//                                                                                }
-//                                                                            });
-//                                                                        }else{
-//                                                                            progressDialog.dismiss();
-//                                                                            ReusableFunctionsAndObjects.showMessageAlert(context, "Network Error", "Make sure you are connected to internet.", "OK",(byte)0);
-//                                                                        }
-//                                                                    }
-//                                                                }).addOnFailureListener(new OnFailureListener() {
-//                                                                    @Override
-//                                                                    public void onFailure(@NonNull Exception e) {
-//                                                                        progressDialog.dismiss();
-//                                                                        ReusableFunctionsAndObjects.showMessageAlert(context, "Network Error", "Make sure you are connected to internet.", "OK",(byte)0);
-//                                                                    }
-//                                                                });
-//                                                            }else{
-//                                                                progressDialog.dismiss();
-//                                                                ReusableFunctionsAndObjects.showMessageAlert(context, "Network Error", "Make sure you are connected to internet.", "OK",(byte)0);
-//                                                            }
-//                                                        }
-//                                                    }).addOnFailureListener(new OnFailureListener() {
-//                                                        @Override
-//                                                        public void onFailure(@NonNull Exception e) {
-//                                                            progressDialog.dismiss();
-//                                                            ReusableFunctionsAndObjects.showMessageAlert(context, "Network Error", "Make sure you are connected to internet.", "OK",(byte)0);
-//                                                        }
-//                                                    });
-//                                                }
-//
-//                                                @Override
-//                                                public void onCancelled(@NonNull DatabaseError error) {
-//                                                    progressDialog.dismiss();
-//                                                    ReusableFunctionsAndObjects.showMessageAlert(context, "Network Error", "Make sure you are connected to internet.", "OK",(byte)0);
-//                                                }
-//                                            });
-//                                        }else{
-//                                            progressDialog.dismiss();
-//                                            ReusableFunctionsAndObjects.showMessageAlert(context, "Network Error", "Make sure you are connected to internet.", "OK",(byte)0);
-//                                        }
-//                                    }
-//                                }).addOnFailureListener(new OnFailureListener() {
-//                                    @Override
-//                                    public void onFailure(@NonNull Exception e) {
-//                                        progressDialog.dismiss();
-//                                        ReusableFunctionsAndObjects.showMessageAlert(context, "Network Error", "Make sure you are connected to internet.", "OK",(byte)0);
-//                                    }
-//                                });
                             }
                         }).setNegativeButton("No",null).show();
             }

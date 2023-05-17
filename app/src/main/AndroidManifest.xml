@@ -2,6 +2,11 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.thesis.doctorsappointment">
 
+    <uses-permission android:name="android.permission.SCHEDULE_EXACT_ALARM" />
+    <uses-permission android:name="android.permission.VIBRATE" />
+    <uses-permission android:name="com.android.alarm.permission.SET_ALARM" />
+
+
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,24 +16,30 @@
         android:theme="@style/Theme.DoctorsAppointment">
         <activity
             android:name="com.thesis.doctorsappointment.DoctorMainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity android:name="com.thesis.doctorsappointment.PatientFragments.FixAppointment" />
         <activity
             android:name="com.thesis.doctorsappointment.PatientRegister"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.thesis.doctorsappointment.PatientLoginRegisterChoice"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.thesis.doctorsappointment.LoginActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.thesis.doctorsappointment.AskDoctorPatient"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
         <activity
             android:name="com.thesis.doctorsappointment.SplashScreen"
             android:theme="@style/AppTheme.NoActionBar"
-            android:exported="true">
+            android:exported="true"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -37,11 +48,22 @@
         </activity>
         <activity
             android:name="com.thesis.doctorsappointment.PatientMainActivity"
-            android:theme="@style/AppTheme.NoActionBar" />
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name="com.thesis.doctorsappointment.AlarmActivity"
+            android:theme="@style/AppTheme.NoActionBar"
+            android:screenOrientation="portrait"/>
 
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
+
+        <receiver android:name="com.thesis.doctorsappointment.AlarmReceiver" />
+<!--        <service-->
+<!--            android:name="com.thesis.doctorsappointment.AlarmService"-->
+<!--            android:exported="false"/>-->
+
     </application>
 
 </manifest>

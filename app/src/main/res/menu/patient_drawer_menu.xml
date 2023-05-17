@@ -17,6 +17,9 @@
         android:id="@+id/apt"
         android:title="My Appointments" />
     <item
+        android:id="@+id/alarms"
+        android:title="My Alarms" />
+    <item
         android:id="@+id/logout"
         android:title="Logout" />
 </menu>
