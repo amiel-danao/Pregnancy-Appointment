@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "700404884274",
+    "firebase_url": "https://pregnancy-appointment-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "pregnancy-appointment",
+    "storage_bucket": "pregnancy-appointment.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:700404884274:android:bf9b2e2072a94714b16d2b",
+        "android_client_info": {
+          "package_name": "com.thesis.doctorsappointment"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "700404884274-ss1nubjvc4m2vf4pqd42nh6998vja2qu.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.thesis.doctorsappointment",
+            "certificate_hash": "1aaf6b7f8f5247addb3f68644e5203eee5fb886c"
+          }
+        },
+        {
+          "client_id": "700404884274-1i45toghfl38ghebngaut3g8ti0sf8pm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAB8iBlszRH_2Ezai-4ga3cly8el8sGqOI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "700404884274-1i45toghfl38ghebngaut3g8ti0sf8pm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
