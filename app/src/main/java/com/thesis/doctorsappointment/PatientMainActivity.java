@@ -21,34 +21,44 @@ import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.text.Html;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.UserProfileChangeRequest;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
-import com.google.firebase.messaging.FirebaseMessaging;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
 import com.thesis.doctorsappointment.DataRetrievalClass.UserDetails;
 import com.thesis.doctorsappointment.PatientFragments.MyAlarmsFragment;
 import com.thesis.doctorsappointment.PatientFragments.MyAppointmentFragment;
 import com.thesis.doctorsappointment.PatientFragments.PatientSearchDoctorsFragment;
 import com.thesis.doctorsappointment.PatientFragments.PendingAppointmentFragment;
 
+import java.io.IOException;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 public class PatientMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
@@ -56,6 +66,11 @@ public class PatientMainActivity extends AppCompatActivity implements Navigation
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ProgressDialog progressDialog;
+    private ImageView profileImage;
+    private StorageReference storageReference;
+    private ActivityResultLauncher<Intent> imagePickerLauncher;
+    private Uri selectedImageUri;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +80,8 @@ public class PatientMainActivity extends AppCompatActivity implements Navigation
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
         progressDialog.show();
+
+        
         FirebaseDatabase.getInstance().getReference().child("UserDetails").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -75,8 +92,6 @@ public class PatientMainActivity extends AppCompatActivity implements Navigation
                         ReusableFunctionsAndObjects.setValues(userDetails.getFirstName()+" "+userDetails.getLastName(),userDetails.getEmail(),userDetails.getMobileNo());
                         TextView name=findViewById(R.id.name);
                         name.setText(userDetails.getFirstName()+" "+userDetails.getLastName());
-                        name=findViewById(R.id.iniTv);
-                        name.setText(userDetails.getFirstName().charAt(0)+""+userDetails.getLastName().charAt(0));
                         drawerLayout=findViewById(R.id.drawer_layout);
                         Toolbar toolbar=findViewById(R.id.toolBar);
                         setSupportActionBar(toolbar);
@@ -104,6 +119,8 @@ public class PatientMainActivity extends AppCompatActivity implements Navigation
                         drawerLayout.addDrawerListener(toggle);
                         toggle.syncState();
                         loadFragment(new PatientSearchDoctorsFragment(), "Search doctors",R.id.search_doctor);
+
+                        initializeProfilePicture();
                     }else{
                         logout();
                     }
@@ -118,12 +135,107 @@ public class PatientMainActivity extends AppCompatActivity implements Navigation
             }
         });
 
-        askNotificationPermission();
-
         Long nextAlarmDelay = AlarmReceiver.getNextAlarmDelay(getApplicationContext());
         AlarmService.setAlarm(getApplicationContext(), nextAlarmDelay);
+
+        imagePickerLauncher = registerForActivityResult(
+        new ActivityResultContracts.StartActivityForResult(),
+        result -> {
+            if (result.getResultCode() == RESULT_OK) {
+                Intent data = result.getData();
+                if (data != null && data.getData() != null) {
+                    selectedImageUri = data.getData();
+                    // Set the profile picture using Glide
+                    setProfileImage();
+
+                    // Upload the image file to Firebase Storage
+                    uploadImageToFirebaseStorage();
+                }
+            }
+        });
 //        AlarmService.scheduleAlarms(getApplicationContext());
     }
+
+    private void initializeProfilePicture() {
+        // Find the ImageView instance
+        profileImage = drawerLayout.findViewById(R.id.profile_image);
+
+        // Get Firebase storage reference
+        storageReference = FirebaseStorage.getInstance().getReference();
+
+        // Set the profile picture using Glide
+        setProfileImage();
+
+        // Set OnClickListener for profileImage
+        profileImage.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                openImagePicker();
+            }
+        });
+
+
+    }
+
+    private void openImagePicker() {
+        Intent intent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        imagePickerLauncher.launch(intent);
+    }
+
+    private void setProfileImage() {
+        Glide.with(this)
+            .load(Objects.requireNonNull(FirebaseAuth.getInstance().getCurrentUser()).getPhotoUrl())
+            .placeholder(R.drawable.ic_baseline_perm_identity_24)
+            .error(R.drawable.ic_baseline_perm_identity_24)
+            .into(profileImage);
+    }
+
+    private void uploadImageToFirebaseStorage() {
+        if (selectedImageUri != null) {
+            StorageReference imageRef = storageReference.child("profile_images/" + FirebaseAuth.getInstance().getCurrentUser().getUid());
+
+            imageRef.putFile(selectedImageUri)
+                .addOnSuccessListener(taskSnapshot -> {
+                    // Image upload successful
+                    taskSnapshot.getStorage().getDownloadUrl().addOnCompleteListener(new OnCompleteListener<Uri>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Uri> task) {
+                            if(task.isSuccessful()) {
+                                updateUserPhotoUri(task.getResult());
+                                Toast.makeText(PatientMainActivity.this, "Image uploaded", Toast.LENGTH_SHORT).show();
+                            }
+                            else{
+                                Toast.makeText(PatientMainActivity.this, Objects.requireNonNull(task.getException()).getMessage(), Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    });
+                })
+                .addOnFailureListener(e -> {
+                    // Image upload failed
+                    Toast.makeText(PatientMainActivity.this, "Image upload failed", Toast.LENGTH_SHORT).show();
+                });
+        }
+    }
+
+    private void updateUserPhotoUri(Uri uri) {
+        UserProfileChangeRequest profileUpdates = new UserProfileChangeRequest.Builder()
+            .setPhotoUri(uri)
+            .build();
+
+        FirebaseAuth.getInstance().getCurrentUser().updateProfile(profileUpdates)
+            .addOnCompleteListener(task -> {
+                if (task.isSuccessful()) {
+                    // Photo URL update successful
+                    // You can also retrieve the updated photo URL using currentUser.getPhotoUrl()
+                    setProfileImage();
+                    Toast.makeText(PatientMainActivity.this, "Photo URL updated", Toast.LENGTH_SHORT).show();
+                } else {
+                    // Photo URL update failed
+                    Toast.makeText(PatientMainActivity.this, "Photo URL update failed", Toast.LENGTH_SHORT).show();
+                }
+            });
+    }
+
 
     // Declare the launcher at the top of your Activity/Fragment:
     private final ActivityResultLauncher<String> requestPermissionLauncher =
@@ -135,59 +247,6 @@ public class PatientMainActivity extends AppCompatActivity implements Navigation
                 }
             });
 
-    private void askNotificationPermission() {
-        // This is only necessary for API level >= 33 (TIRAMISU)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
-                    PackageManager.PERMISSION_GRANTED) {
-                // FCM SDK (and your app) can post notifications.
-            } else if (shouldShowRequestPermissionRationale(Manifest.permission.POST_NOTIFICATIONS)) {
-                // TODO: display an educational UI explaining to the user the features that will be enabled
-                //       by them granting the POST_NOTIFICATION permission. This UI should provide the user
-                //       "OK" and "No thanks" buttons. If the user selects "OK," directly request the permission.
-                //       If the user selects "No thanks," allow the user to continue without notifications.
-            } else {
-                // Directly ask for the permission
-                requestPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS);
-            }
-        }
-    }
-
-    void getFCMToken(){
-        FirebaseMessaging.getInstance().getToken()
-        .addOnCompleteListener(new OnCompleteListener<String>() {
-            @Override
-            public void onComplete(@NonNull Task<String> task) {
-                if (!task.isSuccessful()) {
-                    Log.w(TAG, "Fetching FCM registration token failed", task.getException());
-                    return;
-                }
-
-                // Get new FCM registration token
-                String token = task.getResult();
-
-                // Log and toast
-//                Log.d(TAG, token);
-//                Toast.makeText(PatientMainActivity.this, token, Toast.LENGTH_SHORT).show();
-//                sendRegistrationToServer(token);
-            }
-        });
-    }
-
-    private void sendRegistrationToServer(String token) {
-        // TODO: Implement this method to send token to your app server.
-        Map<String, Object> data = new HashMap<>();
-        data.put("token", token);
-        FirebaseFirestore.getInstance().collection("FCM").document(FirebaseAuth.getInstance().getCurrentUser().getUid())
-        .set(data, SetOptions.merge()).addOnCompleteListener(task -> {
-            if(task.isSuccessful()){
-                Log.d(TAG, "new token updated: " + token);
-            }
-            else{
-                Log.e(TAG, task.getException().getMessage());
-            }
-        });
-    }
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {

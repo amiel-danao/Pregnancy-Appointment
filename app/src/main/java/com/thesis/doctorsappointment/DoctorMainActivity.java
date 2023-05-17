@@ -16,8 +16,12 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.CompoundButton;
+import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.bumptech.glide.Glide;
 import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -28,11 +32,15 @@ import com.thesis.doctorsappointment.DataRetrievalClass.UserDetails;
 import com.thesis.doctorsappointment.DoctorFragments.AppointmentFragment;
 import com.thesis.doctorsappointment.DoctorFragments.AppointmentRequestFragment;
 
+import java.util.Objects;
+
 public class DoctorMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 
     private DrawerLayout drawerLayout;
     private NavigationView navigationView;
     private ProgressDialog progressDialog;
+    private ImageView profileImage;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -42,6 +50,7 @@ public class DoctorMainActivity extends AppCompatActivity implements NavigationV
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
         progressDialog.show();
+
         FirebaseDatabase.getInstance().getReference().child("UserDetails").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -52,9 +61,8 @@ public class DoctorMainActivity extends AppCompatActivity implements NavigationV
                         ReusableFunctionsAndObjects.setValues(userDetails.getFirstName()+" "+userDetails.getLastName(),userDetails.getEmail(),userDetails.getMobileNo());
                         TextView name=findViewById(R.id.name);
                         name.setText(userDetails.getFirstName()+" "+userDetails.getLastName());
-                        name=findViewById(R.id.iniTv);
-                        name.setText(userDetails.getFirstName().charAt(0)+""+userDetails.getLastName().charAt(0));
                         drawerLayout=findViewById(R.id.drawer_layout);
+                        profileImage = drawerLayout.findViewById(R.id.profile_image);
                         Toolbar toolbar=findViewById(R.id.toolBar);
                         setSupportActionBar(toolbar);
                         navigationView=findViewById(R.id.navigation_view);
@@ -81,6 +89,8 @@ public class DoctorMainActivity extends AppCompatActivity implements NavigationV
                         drawerLayout.addDrawerListener(toggle);
                         toggle.syncState();
                         loadFragment(new AppointmentRequestFragment(), "Appointment Requests",R.id.appointment_req);
+
+                        setProfileImage();
                     }else{
                         FirebaseAuth.getInstance().signOut();
                         startActivity(new Intent(DoctorMainActivity.this,AskDoctorPatient.class));
@@ -100,6 +110,16 @@ public class DoctorMainActivity extends AppCompatActivity implements NavigationV
 
             }
         });
+
+
+    }
+
+    private void setProfileImage() {
+        Glide.with(this)
+            .load(R.drawable.app_icon)
+            .placeholder(R.drawable.ic_baseline_perm_identity_24)
+            .error(R.drawable.ic_baseline_perm_identity_24)
+            .into(profileImage);
     }
 
     @Override

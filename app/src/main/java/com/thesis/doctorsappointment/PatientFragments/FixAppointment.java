@@ -138,6 +138,7 @@ public class FixAppointment extends AppCompatActivity {
                         newPatientAppointment.setName(name);
                         newPatientAppointment.setSpecialization(spl);
                         newPatientAppointment.setDateAndTime(date.getText()+" "+time.getText());
+                        newPatientAppointment.setPatientUserKey(FirebaseAuth.getInstance().getCurrentUser().getUid());
                         // Set the value of 'NYC'
                         DocumentReference patientRef = firestore.collection("PatientAppointments").document();
                         DocumentReference doctorRef = firestore.collection("DoctorAppointments").document();
@@ -155,6 +156,7 @@ public class FixAppointment extends AppCompatActivity {
                         newDoctorAppointment.setPatientAppointKey(patientRef.getId());
                         newDoctorAppointment.setDoctorAppointKey(doctorRef.getId());
                         newDoctorAppointment.setDateAndTime(date.getText()+" "+time.getText());
+                        newDoctorAppointment.setDoctorId(docid);
 
                         batch.set(patientRef, newPatientAppointment);
                         batch.set(doctorRef, newDoctorAppointment);
