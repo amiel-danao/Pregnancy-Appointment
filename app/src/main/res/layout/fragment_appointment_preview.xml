@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <data>
+        <variable
+            name="model"
+            type="com.thesis.doctorsappointment.models.AppointmentRequest" />
+    </data>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.thesis.doctorsappointment.DoctorFragments.AppointmentPreviewFragment">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:padding="16dp">
+
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/patient_image"
+                android:layout_width="match_parent"
+                android:layout_height="160dp"
+                android:layout_marginBottom="16dp"
+                android:gravity="center"
+                android:src="@drawable/ic_baseline_perm_identity_24"
+                app:civ_border_color="#FF000000"
+                app:civ_border_width="1dp"
+                app:layout_constraintBottom_toTopOf="@+id/name"
+                app:layout_constraintStart_toStartOf="parent"
+                android:scaleType="centerCrop"/>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{@string/label_date_and_time + model.DateAndTime}"
+                android:textSize="18sp"
+                android:padding="8dp" />
+
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@{@string/label_doctor_appoint_key + model.DoctorAppointKey}"-->
+<!--                android:textSize="18sp"-->
+<!--                android:padding="8dp" />-->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{@string/label_name + model.Name}"
+                android:textSize="18sp"
+                android:padding="8dp" />
+
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@{@string/label_patient_appoint_key + model.PatientAppointKey}"-->
+<!--                android:textSize="18sp"-->
+<!--                android:padding="8dp" />-->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{@string/label_patient_email + model.PatientEmail}"
+                android:textSize="18sp"
+                android:padding="8dp" />
+
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@{@string/label_patient_id + model.PatientID}"-->
+<!--                android:textSize="18sp"-->
+<!--                android:padding="8dp" />-->
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{@string/label_patient_phone + model.PatientPhone}"
+                android:textSize="18sp"
+                android:padding="8dp" />
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@{@string/label_status + model.status}"
+                android:textSize="18sp"
+                android:padding="8dp" />
+
+<!--            <TextView-->
+<!--                android:layout_width="match_parent"-->
+<!--                android:layout_height="wrap_content"-->
+<!--                android:text="@{@string/label_doctor_id + model.doctorId}"-->
+<!--                android:textSize="18sp"-->
+<!--                android:padding="8dp" />-->
+
+        </LinearLayout>
+    </FrameLayout>
+</layout>

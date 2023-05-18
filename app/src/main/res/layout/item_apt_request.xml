@@ -11,6 +11,7 @@
     android:elevation="3dp">
 
     <LinearLayout
+        android:id="@+id/appointment_parent"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

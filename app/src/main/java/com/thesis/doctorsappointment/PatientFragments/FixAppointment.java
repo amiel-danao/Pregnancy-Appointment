@@ -1,6 +1,5 @@
 package com.thesis.doctorsappointment.PatientFragments;
 
-import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.AppCompatButton;
@@ -13,16 +12,13 @@ import android.view.View;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
-import com.google.android.gms.tasks.Task;
+
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.WriteBatch;
-import com.thesis.doctorsappointment.DataRetrievalClass.AppointmentRequest;
-import com.thesis.doctorsappointment.DataRetrievalClass.PatientAppointmentRequest;
+import com.thesis.doctorsappointment.models.AppointmentRequest;
+import com.thesis.doctorsappointment.models.PatientAppointmentRequest;
 import com.thesis.doctorsappointment.R;
 import com.thesis.doctorsappointment.ReusableFunctionsAndObjects;
 import java.util.Calendar;

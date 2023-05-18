@@ -18,15 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.thesis.doctorsappointment.Adapters.AppointmentRequestAdapter;
-import com.thesis.doctorsappointment.DataRetrievalClass.AppointmentRequest;
+import com.thesis.doctorsappointment.DoctorMainActivity;
+import com.thesis.doctorsappointment.models.AppointmentRequest;
 import com.thesis.doctorsappointment.R;
 import com.thesis.doctorsappointment.ReusableFunctionsAndObjects;
 import java.util.ArrayList;
@@ -66,7 +63,7 @@ public class AppointmentRequestFragment extends Fragment {
                     for (QueryDocumentSnapshot document : task.getResult()) {
                         appointmentRequestList.add(document.toObject(AppointmentRequest.class));
                     }
-                    appointmentRequestAdapter=new AppointmentRequestAdapter(getContext(),appointmentRequestList);
+                    appointmentRequestAdapter=new AppointmentRequestAdapter(getContext(), appointmentRequestList, ((DoctorMainActivity) getActivity()).getSupportFragmentManager());
                     recyclerView.setAdapter(appointmentRequestAdapter);
 
                 } else {
@@ -110,7 +107,7 @@ public class AppointmentRequestFragment extends Fragment {
                 filteredlist.add(re);
             }
         }
-        appointmentRequestAdapter=new AppointmentRequestAdapter(getContext(),filteredlist);
+        appointmentRequestAdapter=new AppointmentRequestAdapter(getContext(),filteredlist, ((DoctorMainActivity) getActivity()).getSupportFragmentManager());
         recyclerView.setAdapter(appointmentRequestAdapter);
     }
 }

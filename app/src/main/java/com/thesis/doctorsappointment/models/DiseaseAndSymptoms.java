@@ -1,4 +1,4 @@
-package com.thesis.doctorsappointment.DataRetrievalClass;
+package com.thesis.doctorsappointment.models;
 
 public class DiseaseAndSymptoms {
     private String DiseaseName,Symptoms;

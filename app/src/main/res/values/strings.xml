@@ -4,4 +4,14 @@
     <string name="navigation_drawer_close">Close Navigation Drawer</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="label_date_and_time">Date and Time: </string>
+    <string name="label_doctor_appoint_key">Doctor Appointment Key: </string>
+    <string name="label_name">Name: </string>
+    <string name="label_patient_appoint_key">Patient Appointment Key: </string>
+    <string name="label_patient_email">Patient Email: </string>
+    <string name="label_patient_id">Patient ID: </string>
+    <string name="label_patient_phone">Patient Phone: </string>
+    <string name="label_status">Status: </string>
+    <string name="label_doctor_id">Doctor ID</string>
+
 </resources>

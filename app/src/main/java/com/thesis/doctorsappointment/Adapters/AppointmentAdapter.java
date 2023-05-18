@@ -14,6 +14,8 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
@@ -23,7 +25,8 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.storage.FirebaseStorage;
-import com.thesis.doctorsappointment.DataRetrievalClass.AppointmentRequest;
+import com.thesis.doctorsappointment.DoctorFragments.AppointmentPreviewFragment;
+import com.thesis.doctorsappointment.models.AppointmentRequest;
 import com.thesis.doctorsappointment.DoctorFragments.AppointmentFragment;
 import com.thesis.doctorsappointment.DoctorMainActivity;
 import com.thesis.doctorsappointment.R;
@@ -36,18 +39,20 @@ import java.util.Map;
 public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.ViewHolder> {
 
     private static final String TAG = "myLogTag";
+    private final FragmentManager fragmentManager;
     private Context context;
     private List<AppointmentRequest> appointmentRequestList;
     private ProgressDialog progressDialog;
     private Map<AppointmentRequest, Uri> patient_pictures;
 
-    public AppointmentAdapter(Context context, List<AppointmentRequest> appointmentRequestList) {
+    public AppointmentAdapter(Context context, List<AppointmentRequest> appointmentRequestList, FragmentManager fragmentManager) {
         this.context = context;
         this.appointmentRequestList = appointmentRequestList;
         progressDialog= new ProgressDialog(context);
         progressDialog.setCanceledOnTouchOutside(false);
         progressDialog.setCancelable(false);
         patient_pictures = new HashMap<>();
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -72,6 +77,9 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         else{
             setPatientPhoto(holder.patient_picture, patient_pictures.get(appointmentRequest));
         }
+
+        holder.appointment_parent.setTag(appointmentRequest);
+        holder.appointment_parent.setOnClickListener(clickPreviewAppointment);
 
         holder.reject.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -124,6 +132,23 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         holder.confirm.setVisibility(View.GONE);
     }
 
+    private final View.OnClickListener clickPreviewAppointment = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            AppointmentRequest appointmentRequest = (AppointmentRequest)v.getTag();
+            Uri imageUrl = null;
+            if(patient_pictures.containsKey(appointmentRequest)) {
+                imageUrl = patient_pictures.get(appointmentRequest);
+            }
+            AppointmentPreviewFragment fragment = AppointmentPreviewFragment.newInstance(appointmentRequest, imageUrl == null? "" : imageUrl.toString());
+// Perform the Fragment transaction
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.fragment_Container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+    };
+
     private void fetchPatientPictureUri(AppointmentRequest appointmentRequest, ImageView imageView) {
 
         FirebaseStorage.getInstance().getReference().child("profile_images/" + appointmentRequest.getPatientID())
@@ -156,6 +181,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         TextView name,email,phone,datetime;
         ImageView patient_picture;
         AppCompatButton confirm,reject;
+        View appointment_parent;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name=itemView.findViewById(R.id.patient_name);
@@ -165,6 +191,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
             confirm=itemView.findViewById(R.id.confirm);
             reject=itemView.findViewById(R.id.reject);
             patient_picture=itemView.findViewById(R.id.patient_picture);
+            appointment_parent=itemView.findViewById(R.id.appointment_parent);
         }
     }
 }

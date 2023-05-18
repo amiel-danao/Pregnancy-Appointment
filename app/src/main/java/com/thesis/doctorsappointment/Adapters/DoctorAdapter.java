@@ -9,7 +9,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.thesis.doctorsappointment.DataRetrievalClass.Doctor;
+import com.thesis.doctorsappointment.models.Doctor;
 import com.thesis.doctorsappointment.PatientFragments.FixAppointment;
 import com.thesis.doctorsappointment.R;
 

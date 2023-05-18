@@ -1,4 +1,4 @@
-package com.thesis.doctorsappointment.DataRetrievalClass;
+package com.thesis.doctorsappointment.models;
 
 public class UserDetails {
     private String Email,FirstName,LastName,MobileNo,UserType;

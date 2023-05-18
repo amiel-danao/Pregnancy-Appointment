@@ -19,7 +19,7 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.thesis.doctorsappointment.Adapters.DoctorAdapter;
-import com.thesis.doctorsappointment.DataRetrievalClass.Doctor;
+import com.thesis.doctorsappointment.models.Doctor;
 import com.thesis.doctorsappointment.R;
 import com.thesis.doctorsappointment.ReusableFunctionsAndObjects;
 import java.util.ArrayList;

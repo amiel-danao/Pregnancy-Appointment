@@ -9,24 +9,17 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.app.AppCompatDelegate;
 import androidx.appcompat.widget.SwitchCompat;
 import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.fragment.app.Fragment;
-import androidx.work.OneTimeWorkRequest;
-import androidx.work.WorkManager;
 
-import android.Manifest;
 import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
 import android.text.Html;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.CompoundButton;
@@ -44,20 +37,14 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 import com.google.firebase.storage.FirebaseStorage;
 import com.google.firebase.storage.StorageReference;
-import com.thesis.doctorsappointment.DataRetrievalClass.UserDetails;
+import com.thesis.doctorsappointment.models.UserDetails;
 import com.thesis.doctorsappointment.PatientFragments.MyAlarmsFragment;
 import com.thesis.doctorsappointment.PatientFragments.MyAppointmentFragment;
 import com.thesis.doctorsappointment.PatientFragments.PatientSearchDoctorsFragment;
 import com.thesis.doctorsappointment.PatientFragments.PendingAppointmentFragment;
 
-import java.io.IOException;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Objects;
 
 public class PatientMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{

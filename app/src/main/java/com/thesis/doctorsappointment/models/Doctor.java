@@ -1,4 +1,4 @@
-package com.thesis.doctorsappointment.DataRetrievalClass;
+package com.thesis.doctorsappointment.models;
 
 public class Doctor {
     private String Address,City,FirstName,Id,LastName,MobileNo,Specialization;

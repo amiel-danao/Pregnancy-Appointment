@@ -16,7 +16,6 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.text.Html;
 import android.view.MenuItem;
-import android.view.View;
 import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -28,11 +27,9 @@ import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.thesis.doctorsappointment.DataRetrievalClass.UserDetails;
+import com.thesis.doctorsappointment.models.UserDetails;
 import com.thesis.doctorsappointment.DoctorFragments.AppointmentFragment;
 import com.thesis.doctorsappointment.DoctorFragments.AppointmentRequestFragment;
-
-import java.util.Objects;
 
 public class DoctorMainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener{
 

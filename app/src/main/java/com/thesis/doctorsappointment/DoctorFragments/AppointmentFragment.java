@@ -18,16 +18,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 import com.thesis.doctorsappointment.Adapters.AppointmentAdapter;
-import com.thesis.doctorsappointment.Adapters.AppointmentRequestAdapter;
-import com.thesis.doctorsappointment.DataRetrievalClass.AppointmentRequest;
+import com.thesis.doctorsappointment.DoctorMainActivity;
+import com.thesis.doctorsappointment.models.AppointmentRequest;
 import com.thesis.doctorsappointment.R;
 import com.thesis.doctorsappointment.ReusableFunctionsAndObjects;
 
@@ -68,7 +64,7 @@ public class AppointmentFragment extends Fragment {
                             for (QueryDocumentSnapshot document : task.getResult()) {
                                 appointmentRequestList.add(document.toObject(AppointmentRequest.class));
                             }
-                            appointmentAdapter=new AppointmentAdapter(getContext(),appointmentRequestList);
+                            appointmentAdapter=new AppointmentAdapter(getContext(),appointmentRequestList, ((DoctorMainActivity) getActivity()).getSupportFragmentManager());
                             recyclerView.setAdapter(appointmentAdapter);
                             progressDialog.dismiss();
                         } else {
@@ -112,7 +108,7 @@ public class AppointmentFragment extends Fragment {
                 filteredlist.add(symptoms);
             }
         }
-        appointmentAdapter=new AppointmentAdapter(getContext(),filteredlist);
+        appointmentAdapter=new AppointmentAdapter(getContext(), filteredlist, ((DoctorMainActivity) getActivity()).getSupportFragmentManager());
         recyclerView.setAdapter(appointmentAdapter);
     }
 }

@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-import com.thesis.doctorsappointment.DataRetrievalClass.DiseaseAndSymptoms;
+import com.thesis.doctorsappointment.models.DiseaseAndSymptoms;
 import com.thesis.doctorsappointment.R;
 import java.util.List;
 

@@ -3,8 +3,8 @@ package com.thesis.doctorsappointment.Adapters;
 import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.media.Image;
 import android.net.Uri;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,33 +13,21 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.widget.AppCompatButton;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.bumptech.glide.Glide;
 import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.MutableData;
-import com.google.firebase.database.Transaction;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QueryDocumentSnapshot;
-import com.google.firebase.firestore.QuerySnapshot;
 import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
-import com.thesis.doctorsappointment.DataRetrievalClass.AppointmentRequest;
-import com.thesis.doctorsappointment.DataRetrievalClass.PatientAppointmentRequest;
-import com.thesis.doctorsappointment.DoctorFragments.AppointmentRequestFragment;
-import com.thesis.doctorsappointment.DoctorMainActivity;
+import com.thesis.doctorsappointment.DoctorFragments.AppointmentPreviewFragment;
+import com.thesis.doctorsappointment.models.AppointmentRequest;
 import com.thesis.doctorsappointment.R;
 import com.thesis.doctorsappointment.ReusableFunctionsAndObjects;
 
@@ -51,12 +39,13 @@ public class AppointmentRequestAdapter  extends RecyclerView.Adapter<Appointment
 
     private static final String TAG = "myLogTag";
     private final FirebaseFirestore firestore;
+    private final FragmentManager fragmentManager;
     private Context context;
     private List<AppointmentRequest> appointmentRequestList;
     private Map<AppointmentRequest, Uri> patient_pictures;
     private ProgressDialog progressDialog;
 
-    public AppointmentRequestAdapter(Context context, List<AppointmentRequest> appointmentRequestList) {
+    public AppointmentRequestAdapter(Context context, List<AppointmentRequest> appointmentRequestList, FragmentManager fragmentManager) {
         this.context = context;
         this.appointmentRequestList = appointmentRequestList;
         progressDialog= new ProgressDialog(context);
@@ -64,6 +53,7 @@ public class AppointmentRequestAdapter  extends RecyclerView.Adapter<Appointment
         progressDialog.setCancelable(false);
         firestore = FirebaseFirestore.getInstance();
         patient_pictures = new HashMap<>();
+        this.fragmentManager = fragmentManager;
     }
 
     @NonNull
@@ -87,6 +77,9 @@ public class AppointmentRequestAdapter  extends RecyclerView.Adapter<Appointment
         else{
             setPatientPhoto(holder.patient_picture, patient_pictures.get(appointmentRequest));
         }
+
+        holder.appointment_parent.setTag(appointmentRequest);
+        holder.appointment_parent.setOnClickListener(clickPreviewAppointment);
 
         holder.datetime.setText(appointmentRequest.getDateAndTime());
         holder.reject.setOnClickListener(v -> new AlertDialog.Builder(context).setCancelable(false).setMessage("Are you sure you want to reject the appointment request of "+appointmentRequest.getName()+" for "+appointmentRequest.getDateAndTime()+"?")
@@ -157,6 +150,23 @@ public class AppointmentRequestAdapter  extends RecyclerView.Adapter<Appointment
         });
     }
 
+    private final View.OnClickListener clickPreviewAppointment = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            AppointmentRequest appointmentRequest = (AppointmentRequest)v.getTag();
+            Uri imageUrl = null;
+            if(patient_pictures.containsKey(appointmentRequest)) {
+                imageUrl = patient_pictures.get(appointmentRequest);
+            }
+            AppointmentPreviewFragment fragment = AppointmentPreviewFragment.newInstance(appointmentRequest, imageUrl == null? "" : imageUrl.toString());
+// Perform the Fragment transaction
+            FragmentTransaction transaction = fragmentManager.beginTransaction();
+            transaction.replace(R.id.fragment_Container, fragment);
+            transaction.addToBackStack(null);
+            transaction.commit();
+        }
+    };
+
     private void fetchPatientPictureUri(AppointmentRequest appointmentRequest, ImageView imageView) {
 
         FirebaseStorage.getInstance().getReference().child("profile_images/" + appointmentRequest.getPatientID())
@@ -190,6 +200,7 @@ public class AppointmentRequestAdapter  extends RecyclerView.Adapter<Appointment
         TextView name,email,phone,datetime;
         ImageView patient_picture;
         AppCompatButton confirm,reject;
+        View appointment_parent;
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
             name=itemView.findViewById(R.id.patient_name);
@@ -199,6 +210,7 @@ public class AppointmentRequestAdapter  extends RecyclerView.Adapter<Appointment
             confirm=itemView.findViewById(R.id.confirm);
             reject=itemView.findViewById(R.id.reject);
             patient_picture=itemView.findViewById(R.id.patient_picture);
+            appointment_parent=itemView.findViewById(R.id.appointment_parent);
         }
     }
 }

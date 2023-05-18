@@ -1,6 +1,6 @@
-package com.thesis.doctorsappointment.DataRetrievalClass;
+package com.thesis.doctorsappointment.models;
 
-public class PatientAppointmentRequest {
+public class PatientAppointmentRequest extends Appointment{
     private String Address,City,DateAndTime,DocID,DoctorAppointKey,Name,PatientAppointKey,Specialization, status, patientUserKey;
 
     public PatientAppointmentRequest() {
