@@ -24,6 +24,9 @@ import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.storage.FirebaseStorage;
 import com.thesis.doctorsappointment.DoctorFragments.AppointmentPreviewFragment;
 import com.thesis.doctorsappointment.models.AppointmentRequest;
@@ -40,6 +43,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
 
     private static final String TAG = "myLogTag";
     private final FragmentManager fragmentManager;
+    private final FirebaseFirestore fireStore;
     private Context context;
     private List<AppointmentRequest> appointmentRequestList;
     private ProgressDialog progressDialog;
@@ -53,6 +57,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
         progressDialog.setCancelable(false);
         patient_pictures = new HashMap<>();
         this.fragmentManager = fragmentManager;
+        this.fireStore = FirebaseFirestore.getInstance();
     }
 
     @NonNull
@@ -65,6 +70,7 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         AppointmentRequest appointmentRequest=appointmentRequestList.get(position);
+        final int index = holder.getAdapterPosition();
         holder.name.setText(appointmentRequest.getName());
         holder.email.setText(appointmentRequest.getPatientEmail());
         holder.phone.setText(appointmentRequest.getPatientPhone());
@@ -90,39 +96,26 @@ public class AppointmentAdapter extends RecyclerView.Adapter<AppointmentAdapter.
                             public void onClick(DialogInterface dialog, int which) {
                                 progressDialog.setMessage("Cancelling...");
                                 progressDialog.show();
-                                FirebaseDatabase.getInstance().getReference().child("ConfirmedPatientAppointments").child(appointmentRequest.getPatientID()).child(appointmentRequest.getPatientAppointKey()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<Void> task) {
-                                        if(task.isSuccessful()){
-                                            FirebaseDatabase.getInstance().getReference().child("ConfirmedDocAppointments").child(FirebaseAuth.getInstance().getCurrentUser().getUid()).child(appointmentRequest.getDoctorAppointKey()).removeValue().addOnCompleteListener(new OnCompleteListener<Void>() {
-                                                @Override
-                                                public void onComplete(@NonNull Task<Void> task) {
-                                                    if(task.isSuccessful()){
-                                                        progressDialog.dismiss();
-                                                        Toast.makeText(context, "Cancelled", Toast.LENGTH_SHORT).show();
-                                                        ((DoctorMainActivity)context).getSupportFragmentManager().beginTransaction().replace(R.id.fragment_Container, new AppointmentFragment(),"Appointments").addToBackStack(null).commit();
-                                                    }else {
-                                                        progressDialog.dismiss();
-                                                        ReusableFunctionsAndObjects.showMessageAlert(context, "Network Error", "Make sure you are connected to internet.", "OK",(byte)0);
-                                                    }
-                                                }
-                                            }).addOnFailureListener(new OnFailureListener() {
-                                                @Override
-                                                public void onFailure(@NonNull Exception e) {
-                                                    progressDialog.dismiss();
-                                                    ReusableFunctionsAndObjects.showMessageAlert(context, "Network Error", "Make sure you are connected to internet.", "OK",(byte)0);
-                                                }
-                                            });
-                                        }else{
-                                            progressDialog.dismiss();
-                                            ReusableFunctionsAndObjects.showMessageAlert(context, "Network Error", "Make sure you are connected to internet.", "OK",(byte)0);
-                                        }
+
+                                FirebaseFirestore.getInstance().collection("DoctorAppointments").document(appointmentRequest.getDoctorAppointKey())
+                                                .delete();
+
+                                WriteBatch batch = fireStore.batch();
+
+                                DocumentReference patientRef = fireStore.collection("PatientAppointments").document(appointmentRequest.getPatientAppointKey());
+                                batch.delete(patientRef);
+
+                                DocumentReference doctorRef = fireStore.collection("DoctorAppointments").document(appointmentRequest.getDoctorAppointKey());
+                                batch.delete(doctorRef);
+                                batch.commit().addOnCompleteListener(task -> {
+                                    progressDialog.dismiss();
+                                    if(task.isSuccessful()){
+                                        Toast.makeText(context, "Cancelled", Toast.LENGTH_SHORT).show();
+                                        appointmentRequestList.remove(appointmentRequest);
+                                        notifyItemRemoved(index);
                                     }
-                                }).addOnFailureListener(new OnFailureListener() {
-                                    @Override
-                                    public void onFailure(@NonNull Exception e) {
-                                        progressDialog.dismiss();
-                                        ReusableFunctionsAndObjects.showMessageAlert(context, "Network Error", "Make sure you are connected to internet.", "OK",(byte)0);
+                                    else{
+                                        ReusableFunctionsAndObjects.showMessageAlert(context, "Update Error", task.getException().getMessage(), "Close",(byte)0);
                                     }
                                 });
                             }

@@ -28,7 +28,7 @@
         android:fontFamily="@font/cutive"
         android:gravity="center"
         android:text="Doctor's\nAppointment"
-        android:textColor="@color/mainTextColor"
+        android:textColor="@color/black"
         android:textSize="35sp"></TextView>
 
 </RelativeLayout>

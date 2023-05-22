@@ -1,3 +1,3 @@
-reminder medicine intake
-in doctor page, show info of patient
-upload picture of patient
+[ok]reminder medicine intake
+[ok]in doctor page, show info of patient
+[ok]upload picture of patient

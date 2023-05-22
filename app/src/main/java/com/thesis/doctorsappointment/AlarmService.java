@@ -138,7 +138,8 @@ public class AlarmService {
         sharedPreferences.edit().putLong(UPDATE_TIME_KEY, triggerTimeInMillis).apply();
 
         Intent startIntent = new Intent(context, AlarmReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, startIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        int flags = PendingIntent.FLAG_UPDATE_CURRENT | PendingIntent.FLAG_MUTABLE;
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 1, startIntent, flags);
 
         AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
 //        alarmManager.setAlarmClock(new AlarmManager.AlarmClockInfo(triggerTimeInMillis, pendingIntent), pendingIntent);
